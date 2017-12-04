@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.d6td.lucky.dao.MemberMapper">
+    <resultMap id="BaseResultMap" type="com.d6td.lucky.model.Member">
+        <id column="member_id" jdbcType="INTEGER" property="memberId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="lucky" jdbcType="BIT" property="lucky"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="special" jdbcType="BIT" property="special"/>
+        <result column="will_be_check" jdbcType="BIT" property="willBeCheck"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        member_id, name, head_img, open_id, lucky, create_time, special, will_be_check
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from g_member
+        where member_id = #{memberId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        DELETE FROM g_member
+        WHERE member_id = #{memberId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.d6td.lucky.model.Member">
+        INSERT INTO g_member (member_id, name, head_img,
+                              open_id, lucky, create_time,
+                              special, will_be_check)
+        VALUES (#{memberId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR},
+                #{openId,jdbcType=VARCHAR}, #{lucky,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP},
+                #{special,jdbcType=BIT}, #{willBeCheck,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.d6td.lucky.model.Member">
+        insert into g_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="headImg != null">
+                head_img,
+            </if>
+            <if test="openId != null">
+                open_id,
+            </if>
+            <if test="lucky != null">
+                lucky,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="special != null">
+                special,
+            </if>
+            <if test="willBeCheck != null">
+                will_be_check,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                #{memberId,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="headImg != null">
+                #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="lucky != null">
+                #{lucky,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="special != null">
+                #{special,jdbcType=BIT},
+            </if>
+            <if test="willBeCheck != null">
+                #{willBeCheck,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.d6td.lucky.model.Member">
+        update g_member
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="headImg != null">
+                head_img = #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="lucky != null">
+                lucky = #{lucky,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="special != null">
+                special = #{special,jdbcType=BIT},
+            </if>
+            <if test="willBeCheck != null">
+                will_be_check = #{willBeCheck,jdbcType=BIT},
+            </if>
+        </set>
+        where member_id = #{memberId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.d6td.lucky.model.Member">
+        UPDATE g_member
+        SET name          = #{name,jdbcType=VARCHAR},
+            head_img      = #{headImg,jdbcType=VARCHAR},
+            open_id       = #{openId,jdbcType=VARCHAR},
+            lucky         = #{lucky,jdbcType=BIT},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            special       = #{special,jdbcType=BIT},
+            will_be_check = #{willBeCheck,jdbcType=BIT}
+        WHERE member_id = #{memberId,jdbcType=INTEGER}
+    </update>
+    <select id="getMemberByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT *
+        FROM g_member
+        WHERE open_id = #{openId,jdbcType=VARCHAR}
+    </select>
+    <select id="getMemberCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM g_member
+    </select>
+    <select id="getMemberListLimitNum" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT *
+        FROM g_member
+        WHERE lucky = 0
+        ORDER BY RAND()
+        LIMIT #{num, jdbcType=INTEGER}
+    </select>
+    <update id="luckyMember" parameterType="java.lang.Integer">
+        UPDATE g_member
+        SET lucky = 1
+        WHERE member_id = #{memberId, jdbcType=INTEGER}
+    </update>
+    <update id="willBeCheck">
+        UPDATE g_member
+        SET will_be_check = 1
+        WHERE member_id = #{memberId, jdbcType=INTEGER}
+        AND special = 1
+    </update>
+</mapper>
